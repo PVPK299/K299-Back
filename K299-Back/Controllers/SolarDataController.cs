@@ -84,7 +84,6 @@ namespace K299_Back.Controllers
 
             SqlDataReader myreader;
 
-
             using (SqlConnection myCon = new SqlConnection(sqlDataSource))
             {
                 myCon.Open();
@@ -117,10 +116,13 @@ namespace K299_Back.Controllers
 
             }
         }
+
+        //public void InsertOne(DateTime Time, float Temperature, float PV1_Voltage, float PV2_Voltage, float PV1_Current, float PV2_Current, float Total_Energy,
+        //                        float Total_Operation_Hours, float Total_AC_Power, float Daily_Energy, string ControllerName)
+
         //Put: api/SolarData/IsnertOne
         [HttpPut("InsertOne")]
-        public void InsertOne(DateTime Time, float Temperature, float PV1_Voltage, float PV2_Voltage, float PV1_Current, float PV2_Current, float Total_Energy,
-                                float Total_Operation_Hours, float Total_AC_Power, float Daily_Energy, string ControllerName)
+        public void InsertOne([FromBody] SolarData Data)
         {
 
             string query = @"INSERT INTO dbo.solar_park
@@ -143,17 +145,17 @@ namespace K299_Back.Controllers
 
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myCommand.Parameters.AddWithValue("@Time", Time);
-                    myCommand.Parameters.AddWithValue("@Temperature", Temperature);
-                    myCommand.Parameters.AddWithValue("@PV1_Voltage", PV1_Voltage);
-                    myCommand.Parameters.AddWithValue("@PV2_Voltage", PV2_Voltage);
-                    myCommand.Parameters.AddWithValue("@PV1_Current", PV1_Current);
-                    myCommand.Parameters.AddWithValue("@PV2_Current", PV2_Current);
-                    myCommand.Parameters.AddWithValue("@Total_Energy", Total_Energy);
-                    myCommand.Parameters.AddWithValue("@Total_Operation_Hours", Total_Operation_Hours);
-                    myCommand.Parameters.AddWithValue("@Total_AC_Power", Total_AC_Power);
-                    myCommand.Parameters.AddWithValue("@Daily_Energy", Daily_Energy);
-                    myCommand.Parameters.AddWithValue("@ControllerName", ControllerName);
+                    myCommand.Parameters.AddWithValue("@Time", Data.Time);
+                    myCommand.Parameters.AddWithValue("@Temperature", Data.Temperature);
+                    myCommand.Parameters.AddWithValue("@PV1_Voltage", Data.PV1_Voltage);
+                    myCommand.Parameters.AddWithValue("@PV2_Voltage", Data.PV2_Voltage);
+                    myCommand.Parameters.AddWithValue("@PV1_Current", Data.PV1_Current);
+                    myCommand.Parameters.AddWithValue("@PV2_Current", Data.PV2_Current);
+                    myCommand.Parameters.AddWithValue("@Total_Energy", Data.Total_Energy);
+                    myCommand.Parameters.AddWithValue("@Total_Operation_Hours", Data.Total_Operation_Hours);
+                    myCommand.Parameters.AddWithValue("@Total_AC_Power", Data.Total_AC_Power);
+                    myCommand.Parameters.AddWithValue("@Daily_Energy", Data.Daily_Energy);
+                    myCommand.Parameters.AddWithValue("@ControllerName", Data.ControllerName);
 
                     myreader = myCommand.ExecuteReader();
                     table.Load(myreader);
