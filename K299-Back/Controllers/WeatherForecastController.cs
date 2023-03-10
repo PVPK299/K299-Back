@@ -1,3 +1,4 @@
+using K299_Back.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace K299_Back.Controllers
