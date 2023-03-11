@@ -72,6 +72,55 @@ namespace K299_Back.Controllers
             return new JsonResult(Data);
         }
 
+        [HttpGet("GetSolarDataByID/{ID}")]
+        public JsonResult GetByID(int ID)
+        {
+            SolarData Data = new SolarData();
+
+            string query = @"SELECT ID, Time, Temperature, PV1_Voltage, PV2_Voltage, PV1_Current,
+                                    PV2_Current, Total_Energy, Total_Operation_Hours, Total_AC_Power,
+                                   Daily_Energy, ControllerName FROM dbo.solar_park WHERE ID =" + ID;
+
+
+            string sqlDataSource = _configuration.GetConnectionString("SolarData");
+
+            SqlDataReader myreader;
+
+
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myreader = myCommand.ExecuteReader();
+                    while (myreader.Read())
+                    {
+                        SolarData solar = new SolarData()
+                        {
+                            ID = (int)myreader.GetInt32(0),
+                            Time = DateTime.Parse(myreader.GetString(1)),
+                            Temperature = (float)myreader.GetDouble(2),
+                            PV1_Voltage = (float)myreader.GetDouble(3),
+                            PV2_Voltage = (float)myreader.GetDouble(4),
+                            PV1_Current = (float)myreader.GetDouble(5),
+                            PV2_Current = (float)myreader.GetDouble(6),
+                            Total_Energy = (float)myreader.GetDouble(7),
+                            Total_Operation_Hours = (float)myreader.GetDouble(8),
+                            Total_AC_Power = (float)myreader.GetDouble(9),
+                            Daily_Energy = (float)myreader.GetDouble(10),
+                            ControllerName = myreader.GetString(11)
+                        };
+                        Data = solar;
+                    }
+                    myreader.Close();
+                }
+
+                myCon.Close();
+            }
+            return new JsonResult(Data);
+        }
+
         // GET: api/SolarData/InsertDataFromFile
         [HttpGet("InsertDataFromFile/{filename}")]
         public JsonResult ReadCsvAndPutData(string filename)
