@@ -101,7 +101,7 @@ namespace K299_Back.Controllers
                         SolarData solar = new SolarData()
                         {
                             ID = (int)myreader.GetInt32(0),
-                            Time = DateTime.Parse(myreader.GetString(1)),
+                            Time = myreader.GetDateTime(1),
                             Temperature = (float)myreader.GetDouble(2),
                             PV1_Voltage = (float)myreader.GetDouble(3),
                             PV2_Voltage = (float)myreader.GetDouble(4),
