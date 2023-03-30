@@ -7,6 +7,7 @@ using System.Globalization;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Reflection.PortableExecutable;
+using System.Diagnostics;
 
 namespace K299_Back.Controllers
 {
@@ -133,6 +134,58 @@ namespace K299_Back.Controllers
                                     PV2_Current, Total_Energy, Total_Operation_Hours, Total_AC_Power,
                                    Daily_Energy, ControllerName FROM dbo.inverter_record WHERE ID >=" + IDFrom + " AND ID <=" + IDTo;
 
+
+            string sqlDataSource = _configuration.GetConnectionString("SolarData");
+
+            SqlDataReader myreader;
+
+
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myreader = myCommand.ExecuteReader();
+                    while (myreader.Read())
+                    {
+                        SolarData solar = new SolarData()
+                        {
+                            ID = (int)myreader.GetInt32(0),
+                            Time = myreader.GetDateTime(1),
+                            Temperature = (float)myreader.GetDouble(2),
+                            PV1_Voltage = (float)myreader.GetDouble(3),
+                            PV2_Voltage = (float)myreader.GetDouble(4),
+                            PV1_Current = (float)myreader.GetDouble(5),
+                            PV2_Current = (float)myreader.GetDouble(6),
+                            Total_Energy = (float)myreader.GetDouble(7),
+                            Total_Operation_Hours = (float)myreader.GetDouble(8),
+                            Total_AC_Power = (float)myreader.GetDouble(9),
+                            Daily_Energy = (float)myreader.GetDouble(10),
+                            ControllerName = myreader.GetString(11)
+                        };
+                        Data.Add(solar);
+                    }
+                    myreader.Close();
+                }
+
+                myCon.Close();
+            }
+            return new JsonResult(Data);
+        }
+
+        // GET: api/SolarData/GetByDateFromTo/{startDate}/{endDate}
+        [HttpGet("GetByDateFromTo/{startDate}/{endDate}")]
+        public JsonResult GetByDateFromTo(string startDate, string endDate)
+        {
+            List<SolarData> Data = new List<SolarData>();
+
+            DateTime date1 = DateTime.ParseExact(startDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            DateTime date2 = DateTime.ParseExact(endDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+
+            string query = @"SELECT ID, Time, Temperature, PV1_Voltage, PV2_Voltage, PV1_Current,
+                                    PV2_Current, Total_Energy, Total_Operation_Hours, Total_AC_Power,
+                                   Daily_Energy, ControllerName FROM dbo.Inverter_record WHERE Time BETWEEN " + "'" + startDate + "T00:00:00'" + " AND " + "'" + endDate + "T00:00:00'";
 
             string sqlDataSource = _configuration.GetConnectionString("SolarData");
 
