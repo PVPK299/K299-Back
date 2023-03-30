@@ -7,6 +7,7 @@ using System.Globalization;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Reflection.PortableExecutable;
+using System.Diagnostics;
 
 namespace K299_Back.Controllers
 {
@@ -173,16 +174,18 @@ namespace K299_Back.Controllers
             return new JsonResult(Data);
         }
 
-        // GET: api/SolarData/GetByDateFromTo/{DateFrom}/{DateTo}
-        [HttpGet("GetByDateFromTo/{DateFrom}/{DateTo}")]
-        public JsonResult GetByDateFromTo(DateTime startDate, DateTime endDate)
+        // GET: api/SolarData/GetByDateFromTo/{startDate}/{endDate}
+        [HttpGet("GetByDateFromTo/{startDate}/{endDate}")]
+        public JsonResult GetByDateFromTo(string startDate, string endDate)
         {
             List<SolarData> Data = new List<SolarData>();
 
+            DateTime date1 = DateTime.ParseExact(startDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            DateTime date2 = DateTime.ParseExact(endDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+
             string query = @"SELECT ID, Time, Temperature, PV1_Voltage, PV2_Voltage, PV1_Current,
                                     PV2_Current, Total_Energy, Total_Operation_Hours, Total_AC_Power,
-                                   Daily_Energy, ControllerName FROM dbo.inverter_record WHERE Time BETWEEN" + startDate + " AND" + endDate;
-
+                                   Daily_Energy, ControllerName FROM dbo.Inverter_record WHERE Time BETWEEN " + "'" + startDate + "T00:00:00'" + " AND " + "'" + endDate + "T00:00:00'";
 
             string sqlDataSource = _configuration.GetConnectionString("SolarData");
 
