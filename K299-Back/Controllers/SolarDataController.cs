@@ -268,7 +268,7 @@ namespace K299_Back.Controllers
             }
         }
 
-        //Put: api/SolarData/IsnertOne
+        //Put: api/SolarData/InsertOne
         [HttpPut("InsertOne")]
         public void InsertOne([FromBody] SolarData Data)
         {
@@ -315,5 +315,101 @@ namespace K299_Back.Controllers
             }
         }
 
+        //------------------simulated data---------------------
+
+        [HttpPut("InsertOneToSimulation")]
+        public void IntervalInsert([FromBody] SolarData Data)
+        {
+
+            string query = @"INSERT INTO dbo.Simulated_inverter_record
+                            (Time, Temperature, PV1_Voltage, PV2_Voltage, PV1_Current,
+                                    PV2_Current, Total_Energy, Total_Operation_Hours, Total_AC_Power,
+                                   Daily_Energy, ControllerName)
+                            VALUES (@Time, @Temperature, @PV1_Voltage, @PV2_Voltage, @PV1_Current,
+                                    @PV2_Current, @Total_Energy, @Total_Operation_Hours, @Total_AC_Power,
+                                    @Daily_Energy, @ControllerName)";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("SolarData");
+
+            SqlDataReader myreader;
+
+
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@Time", DateTime.Now);
+                    myCommand.Parameters.AddWithValue("@Temperature", Data.Temperature);
+                    myCommand.Parameters.AddWithValue("@PV1_Voltage", Data.PV1_Voltage);
+                    myCommand.Parameters.AddWithValue("@PV2_Voltage", Data.PV2_Voltage);
+                    myCommand.Parameters.AddWithValue("@PV1_Current", Data.PV1_Current);
+                    myCommand.Parameters.AddWithValue("@PV2_Current", Data.PV2_Current);
+                    myCommand.Parameters.AddWithValue("@Total_Energy", Data.Total_Energy);
+                    myCommand.Parameters.AddWithValue("@Total_Operation_Hours", Data.Total_Operation_Hours);
+                    myCommand.Parameters.AddWithValue("@Total_AC_Power", Data.Total_AC_Power);
+                    myCommand.Parameters.AddWithValue("@Daily_Energy", Data.Daily_Energy);
+                    myCommand.Parameters.AddWithValue("@ControllerName", Data.ControllerName);
+
+                    myreader = myCommand.ExecuteReader();
+                    table.Load(myreader);
+                    myreader.Close();
+                    myCon.Close();
+
+                }
+
+            }
+        }
+
+        [HttpGet("GetDataByID/{ID}")]
+        public SolarData GetSolarDataByID(int ID)
+        {
+            SolarData Data = new SolarData();
+
+            string query = @"SELECT ID, Time, Temperature, PV1_Voltage, PV2_Voltage, PV1_Current,
+                                    PV2_Current, Total_Energy, Total_Operation_Hours, Total_AC_Power,
+                                   Daily_Energy, ControllerName FROM dbo.Inverter_record WHERE ID =" + ID;
+
+
+            string sqlDataSource = _configuration.GetConnectionString("SolarData");
+
+            SqlDataReader myreader;
+
+
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myreader = myCommand.ExecuteReader();
+                    while (myreader.Read())
+                    {
+                        SolarData solar = new SolarData()
+                        {
+                            ID = (int)myreader.GetInt32(0),
+                            Time = myreader.GetDateTime(1),
+                            Temperature = (float)myreader.GetDouble(2),
+                            PV1_Voltage = (float)myreader.GetDouble(3),
+                            PV2_Voltage = (float)myreader.GetDouble(4),
+                            PV1_Current = (float)myreader.GetDouble(5),
+                            PV2_Current = (float)myreader.GetDouble(6),
+                            Total_Energy = (float)myreader.GetDouble(7),
+                            Total_Operation_Hours = (float)myreader.GetDouble(8),
+                            Total_AC_Power = (float)myreader.GetDouble(9),
+                            Daily_Energy = (float)myreader.GetDouble(10),
+                            ControllerName = myreader.GetString(11)
+                        };
+                        Data = solar;
+                    }
+                    myreader.Close();
+                }
+
+                myCon.Close();
+            }
+            return Data;
+        }
     }
 }
