@@ -33,7 +33,9 @@ namespace K299_Back
 
         private void DoWork(object state)
         {
-            _otherController.IntervalInsert(_otherController.GetSolarDataByID(id++));
+            var data = _otherController.GetSolarDataByID(id++);
+            if(data != null)
+                _otherController.IntervalInsert(data);
         }
     }
 }

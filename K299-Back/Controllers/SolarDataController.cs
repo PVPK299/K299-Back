@@ -31,7 +31,7 @@ namespace K299_Back.Controllers
 
             string query = @"SELECT ID, Time, Temperature, PV1_Voltage, PV2_Voltage, PV1_Current,
                                     PV2_Current, Total_Energy, Total_Operation_Hours, Total_AC_Power,
-                                   Daily_Energy, ControllerName FROM dbo.Inverter_record";
+                                   Daily_Energy, ControllerName FROM dbo.Simulated_inverter_record";
 
             
             string sqlDataSource = _configuration.GetConnectionString("SolarData");
@@ -81,7 +81,7 @@ namespace K299_Back.Controllers
 
             string query = @"SELECT ID, Time, Temperature, PV1_Voltage, PV2_Voltage, PV1_Current,
                                     PV2_Current, Total_Energy, Total_Operation_Hours, Total_AC_Power,
-                                   Daily_Energy, ControllerName FROM dbo.Inverter_record WHERE ID =" + ID;
+                                   Daily_Energy, ControllerName FROM dbo.Simulated_inverter_record WHERE ID =" + ID;
 
 
             string sqlDataSource = _configuration.GetConnectionString("SolarData");
@@ -131,7 +131,7 @@ namespace K299_Back.Controllers
 
             string query = @"SELECT ID, Time, Temperature, PV1_Voltage, PV2_Voltage, PV1_Current,
                                     PV2_Current, Total_Energy, Total_Operation_Hours, Total_AC_Power,
-                                   Daily_Energy, ControllerName FROM dbo.inverter_record WHERE ID >=" + IDFrom + " AND ID <=" + IDTo;
+                                   Daily_Energy, ControllerName FROM dbo.Simulated_inverter_record WHERE ID >=" + IDFrom + " AND ID <=" + IDTo;
 
 
             string sqlDataSource = _configuration.GetConnectionString("SolarData");
@@ -410,6 +410,31 @@ namespace K299_Back.Controllers
                 myCon.Close();
             }
             return Data;
+        }
+
+        [HttpDelete("ClearTable")]
+        public int DeleteAll()
+        {
+            SolarData Data = new SolarData();
+
+            string query = @"TRUNCATE TABLE Simulated_inverter_record";
+            int count;
+
+            string sqlDataSource = _configuration.GetConnectionString("SolarData");
+
+
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    count = myCommand.ExecuteNonQuery();
+                }
+
+                myCon.Close();
+            }
+            return count;
         }
     }
 }
