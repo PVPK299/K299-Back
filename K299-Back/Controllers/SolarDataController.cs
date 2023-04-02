@@ -185,7 +185,7 @@ namespace K299_Back.Controllers
 
             string query = @"SELECT ID, Time, Temperature, PV1_Voltage, PV2_Voltage, PV1_Current,
                                     PV2_Current, Total_Energy, Total_Operation_Hours, Total_AC_Power,
-                                   Daily_Energy, ControllerName FROM dbo.Inverter_record WHERE Time BETWEEN " + "'" + startDate + "T00:00:00'" + " AND " + "'" + endDate + "T23:59:59'";
+                                   Daily_Energy, ControllerName FROM dbo.Inverter_record WHERE Time BETWEEN " + "'" + startDate + "T00:00:00'" + " AND " + "'" + endDate + "T00:00:00'";
 
             string sqlDataSource = _configuration.GetConnectionString("SolarData");
 
