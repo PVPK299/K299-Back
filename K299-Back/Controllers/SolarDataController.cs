@@ -33,7 +33,7 @@ namespace K299_Back.Controllers
                                     PV2_Current, Total_Energy, Total_Operation_Hours, Total_AC_Power,
                                    Daily_Energy, ControllerName FROM dbo.solar_park";
 
-            
+
             string sqlDataSource = _configuration.GetConnectionString("SolarData");
 
             SqlDataReader myreader;
@@ -50,18 +50,18 @@ namespace K299_Back.Controllers
                     {
                         SolarData solar = new SolarData()
                         {
-                            ID                    = (int)myreader.GetInt32(0),
-                            Time                  = DateTime.Parse(myreader.GetString(1)),
-                            Temperature           = (float)myreader.GetDouble(2),
-                            PV1_Voltage           = (float)myreader.GetDouble(3),
-                            PV2_Voltage           = (float)myreader.GetDouble(4),
-                            PV1_Current           = (float)myreader.GetDouble(5),
-                            PV2_Current           = (float)myreader.GetDouble(6),
-                            Total_Energy          = (float)myreader.GetDouble(7),
+                            ID = (int)myreader.GetInt32(0),
+                            Time = DateTime.Parse(myreader.GetString(1)),
+                            Temperature = (float)myreader.GetDouble(2),
+                            PV1_Voltage = (float)myreader.GetDouble(3),
+                            PV2_Voltage = (float)myreader.GetDouble(4),
+                            PV1_Current = (float)myreader.GetDouble(5),
+                            PV2_Current = (float)myreader.GetDouble(6),
+                            Total_Energy = (float)myreader.GetDouble(7),
                             Total_Operation_Hours = (float)myreader.GetDouble(8),
-                            Total_AC_Power        = (float)myreader.GetDouble(9),
-                            Daily_Energy          = (float)myreader.GetDouble(10),
-                            ControllerName        = myreader.GetString(11)
+                            Total_AC_Power = (float)myreader.GetDouble(9),
+                            Daily_Energy = (float)myreader.GetDouble(10),
+                            ControllerName = myreader.GetString(11)
                         };
                         Data.Add(solar);
                     }
@@ -69,7 +69,7 @@ namespace K299_Back.Controllers
                 }
 
                 myCon.Close();
-            } 
+            }
             return new JsonResult(Data);
         }
 
@@ -195,17 +195,17 @@ namespace K299_Back.Controllers
 
                         var solar = new SolarData()
                         {
-                            Time                  = DateTime.Parse(columns[0]),
-                            Temperature           = float.Parse(columns[1]),
-                            PV1_Voltage           = float.Parse(columns[2]),
-                            PV2_Voltage           = float.Parse(columns[3]),
-                            PV1_Current           = float.Parse(columns[4]),
-                            PV2_Current           = float.Parse(columns[5]),
-                            Total_Energy          = float.Parse(columns[6]),
+                            Time = DateTime.Parse(columns[0]),
+                            Temperature = float.Parse(columns[1]),
+                            PV1_Voltage = float.Parse(columns[2]),
+                            PV2_Voltage = float.Parse(columns[3]),
+                            PV1_Current = float.Parse(columns[4]),
+                            PV2_Current = float.Parse(columns[5]),
+                            Total_Energy = float.Parse(columns[6]),
                             Total_Operation_Hours = float.Parse(columns[7]),
-                            Total_AC_Power        = float.Parse(columns[8]),
-                            Daily_Energy          = float.Parse(columns[10]),
-                            ControllerName        = (string)filename
+                            Total_AC_Power = float.Parse(columns[8]),
+                            Daily_Energy = float.Parse(columns[10]),
+                            ControllerName = (string)filename
                         };
 
                         Data.Add(solar);
@@ -244,17 +244,17 @@ namespace K299_Back.Controllers
 
                     using (SqlCommand myCommand = new SqlCommand(query, myCon))
                     {
-                        myCommand.Parameters.AddWithValue("@Time",                  dat.Time);
-                        myCommand.Parameters.AddWithValue("@Temperature",           dat.Temperature);
-                        myCommand.Parameters.AddWithValue("@PV1_Voltage",           dat.PV1_Voltage);
-                        myCommand.Parameters.AddWithValue("@PV2_Voltage",           dat.PV2_Voltage);
-                        myCommand.Parameters.AddWithValue("@PV1_Current",           dat.PV1_Current);
-                        myCommand.Parameters.AddWithValue("@PV2_Current",           dat.PV2_Current);
-                        myCommand.Parameters.AddWithValue("@Total_Energy",          dat.Total_Energy);
+                        myCommand.Parameters.AddWithValue("@Time", dat.Time);
+                        myCommand.Parameters.AddWithValue("@Temperature", dat.Temperature);
+                        myCommand.Parameters.AddWithValue("@PV1_Voltage", dat.PV1_Voltage);
+                        myCommand.Parameters.AddWithValue("@PV2_Voltage", dat.PV2_Voltage);
+                        myCommand.Parameters.AddWithValue("@PV1_Current", dat.PV1_Current);
+                        myCommand.Parameters.AddWithValue("@PV2_Current", dat.PV2_Current);
+                        myCommand.Parameters.AddWithValue("@Total_Energy", dat.Total_Energy);
                         myCommand.Parameters.AddWithValue("@Total_Operation_Hours", dat.Total_Operation_Hours);
-                        myCommand.Parameters.AddWithValue("@Total_AC_Power",        dat.Total_AC_Power);
-                        myCommand.Parameters.AddWithValue("@Daily_Energy",          dat.Daily_Energy);
-                        myCommand.Parameters.AddWithValue("@ControllerName",        dat.ControllerName);
+                        myCommand.Parameters.AddWithValue("@Total_AC_Power", dat.Total_AC_Power);
+                        myCommand.Parameters.AddWithValue("@Daily_Energy", dat.Daily_Energy);
+                        myCommand.Parameters.AddWithValue("@ControllerName", dat.ControllerName);
 
                         myreader = myCommand.ExecuteReader();
                         table.Load(myreader);
