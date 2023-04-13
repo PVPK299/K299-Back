@@ -20,10 +20,14 @@ namespace K299_Back.Controllers
 
         // GET: api/auth/register
         [HttpPost("register")]
+        [Produces("application/json")]
         public IActionResult register([FromBody] NewUser user)
         {
             try
             {
+                _logger.LogDebug(user.ToString());
+
+
                 string? connectionString = _configuration.GetConnectionString("SolarData");
 
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -53,7 +57,9 @@ namespace K299_Back.Controllers
                         reader.Read();
 
                         Dictionary<string, object> registeredUser = Enumerable.Range(0, reader.FieldCount).ToDictionary(reader.GetName, reader.GetValue);
-                        
+                        registeredUser.Remove("birth_date");
+                        registeredUser.Remove("park_share");
+
                         return StatusCode(StatusCodes.Status201Created, registeredUser);
                     }
                 }
