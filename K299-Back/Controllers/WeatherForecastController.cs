@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace K299_Back.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/weather")]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
         {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
+        };
 
         private readonly ILogger<WeatherForecastController> _logger;
 
@@ -29,6 +29,14 @@ namespace K299_Back.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        // GET: api/weather/stations
+        [HttpGet("stations")]
+        [Produces("application/json")]
+        public IActionResult stations()
+        {
+            return Redirect("https://api.meteo.lt/v1/stations");
         }
     }
 }
