@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>K299_Back</RootNamespace>
+    <PackageProjectUrl>https://localhost:8000</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
