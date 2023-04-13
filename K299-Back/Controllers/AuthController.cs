@@ -66,7 +66,8 @@ namespace K299_Back.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status400BadRequest, e.ToString());
+                Dictionary<string, object> body = new() { { "error", e.ToString() } };
+                return StatusCode(StatusCodes.Status400BadRequest, body);
             }
 
         }

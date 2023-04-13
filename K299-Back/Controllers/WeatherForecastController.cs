@@ -1,5 +1,8 @@
 using K299_Back.Model;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace K299_Back.Controllers
 {
@@ -34,9 +37,54 @@ namespace K299_Back.Controllers
         // GET: api/weather/stations
         [HttpGet("stations")]
         [Produces("application/json")]
-        public IActionResult stations()
+        public async Task<IActionResult> stationsAsync()
         {
-            return Redirect("https://api.meteo.lt/v1/stations");
+            HttpClient httpClient = new HttpClient();
+            HttpResponseMessage response = await httpClient.GetAsync("https://api.meteo.lt/v1/stations");
+
+            response.EnsureSuccessStatusCode();
+
+            var body = JsonConvert.DeserializeObject<List<Station>>(await response.Content.ReadAsStringAsync());
+            
+            return StatusCode(StatusCodes.Status200OK, body);
+        }
+
+        private async Task<StationObservations?> GetStationObservations(String? station, String? date)
+        {
+            station ??= "kauno-ams";
+            date ??= "latest";
+
+            HttpClient httpClient = new HttpClient();
+            HttpResponseMessage response = await httpClient.GetAsync($"https://api.meteo.lt/v1/stations/{station}/observations/{date}");
+
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            // opt1
+            // var data = System.Text.Json.JsonSerializer.Deserialize<IDictionary<string, object>>(json);
+            // return StatusCode(StatusCodes.Status200OK, data["observations"]);
+
+            // opt2
+            return JsonConvert.DeserializeObject<StationObservations>(json);
+        }
+
+        // GET: api/weather/stations
+        [HttpGet("observation")]
+        [Produces("application/json")]
+        public async Task<IActionResult> observation(String? station, String? date)
+        {
+            var stationObservations = await GetStationObservations(station, date);
+            return StatusCode(StatusCodes.Status200OK, stationObservations.observations);
+        }
+
+        // GET: api/weather/current
+        [HttpGet("current")]
+        [Produces("application/json")]
+        public async Task<IActionResult> currentWeather(String? station)
+        {
+            var stationObservations = await GetStationObservations(station, null);
+            return StatusCode(StatusCodes.Status200OK, stationObservations.observations.Last());
         }
     }
 }
