@@ -436,5 +436,42 @@ namespace K299_Back.Controllers
             }
             return count;
         }
+
+
+
+        [HttpGet("GetLastID")]
+        public int GetLastID()
+        {
+
+            int id = 0;
+
+            string query = @"SELECT TOP (1) [ID] FROM dbo.Simulated_inverter_record ORDER BY ID DESC";
+
+
+            string sqlDataSource = _configuration.GetConnectionString("SolarData");
+
+            SqlDataReader myreader;
+
+
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myreader = myCommand.ExecuteReader();
+                    while (myreader.Read())
+                    {
+
+                        id = (int)myreader.GetInt32(0);
+                        
+                    }
+                    myreader.Close();
+                }
+
+                myCon.Close();
+            }
+            return id;
+        }
     }
 }

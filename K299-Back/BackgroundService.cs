@@ -21,6 +21,7 @@ namespace K299_Back
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            id = _otherController.GetLastID() + 1;
             _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(5));
             return Task.CompletedTask;
         }
