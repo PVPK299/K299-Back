@@ -1,7 +1,10 @@
 ﻿using K299_Back.Model;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using System.Globalization;
 using System.Collections.Generic;
+using System.Data;
 
 namespace K299_Back.Controllers
 {
@@ -18,11 +21,12 @@ namespace K299_Back.Controllers
             _configuration = configuration;
         }
 
-        // GET: api/auth/register
+        // POST: api/auth/register
         [HttpPost("register")]
         [Produces("application/json")]
         public IActionResult register([FromBody] NewUser user)
         {
+
             try
             {
                 _logger.LogDebug(user.ToString());
@@ -71,5 +75,54 @@ namespace K299_Back.Controllers
             }
 
         }
+
+        //GET: api/auth/login
+        [HttpGet("login/{email}/{password}")]
+        public IActionResult login(string email, string password)
+        {
+            NewUser user = new NewUser();
+            try
+            {
+
+                string emaill = "@email";
+                string passwordd = "@password";
+
+                string query = $@"SELECT id, email, password, first_name, last_name FROM dbo.[user] WHERE email = {emaill} AND password = {passwordd}";
+
+                string sqlDataSource = _configuration.GetConnectionString("SolarData");
+
+                using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+                {   
+
+                    using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                    {
+                        myCommand.Parameters.AddWithValue(emaill, email);
+                        myCommand.Parameters.AddWithValue(passwordd, password);
+                        myCon.Open();
+
+                        SqlDataReader myreader = myCommand.ExecuteReader();
+
+                        myreader.Read();
+
+                        user.ID = myreader.GetGuid(0);
+                        user.email = myreader.GetString(1);
+                        user.password = myreader.GetString(2);
+                        user.first_name = myreader.GetString(3);
+                        user.last_name = myreader.GetString(4);
+
+                    }
+
+                    myCon.Close();
+                    return new JsonResult(user);
+                }
+            }
+            catch (Exception e)
+            {
+                Dictionary<string, object> body = new() { { "error", e.ToString() } };
+                return StatusCode(StatusCodes.Status400BadRequest, body);
+            }
+
+        }
+
     }
 }

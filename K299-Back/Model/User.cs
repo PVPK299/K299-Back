@@ -2,6 +2,7 @@ namespace K299_Back.Model
 {
     public class NewUser
     {
+        public Guid ID { get; set; }
         public string? email { get; set; }
 
         public string? password { get; set; }
