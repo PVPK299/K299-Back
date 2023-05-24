@@ -58,8 +58,8 @@ namespace K299_Back.Controllers
                         reader.Read();
 
                         Dictionary<string, object> registeredUser = Enumerable.Range(0, reader.FieldCount).ToDictionary(reader.GetName, reader.GetValue);
-                        registeredUser.Remove("birth_date");
-                        registeredUser.Remove("park_share");
+                        // registeredUser.Remove("birth_date");
+                        // registeredUser.Remove("park_share");
 
                         return StatusCode(StatusCodes.Status201Created, registeredUser);
                     }
@@ -120,7 +120,14 @@ namespace K299_Back.Controllers
                         {
                             return StatusCode(StatusCodes.Status400BadRequest);
                         }
-                        return StatusCode(StatusCodes.Status200OK);
+
+                        command.CommandText = $@"SELECT * FROM dbo.[user] WHERE id = {id}";
+                        SqlDataReader reader = command.ExecuteReader();
+                        reader.Read();
+
+                        Dictionary<string, object> user = Enumerable.Range(0, reader.FieldCount).ToDictionary(reader.GetName, reader.GetValue);
+
+                        return StatusCode(StatusCodes.Status200OK, user);
                     }
                 }
             }
