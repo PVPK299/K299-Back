@@ -10,4 +10,6 @@ namespace K299_Back.Model
 
         public string? Summary { get; set; }
     }
+
+
 }
