@@ -423,7 +423,7 @@ namespace K299_Back.Controllers
 
             string query = @"SELECT ID, Time, Temperature, PV1_Voltage, PV2_Voltage, PV1_Current,
                                     PV2_Current, Total_Energy, Total_Operation_Hours, Total_AC_Power,
-                                   Daily_Energy, ControllerName FROM dbo.Inverter_record WHERE ID =" + ID;
+                                   Daily_Energy, ControllerName FROM dbo.Simulated_inverter_record WHERE ID =" + ID;
 
 
             string sqlDataSource = _configuration.GetConnectionString("SolarData");
