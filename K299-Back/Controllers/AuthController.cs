@@ -87,7 +87,7 @@ namespace K299_Back.Controllers
                 string emaill = "@email";
                 string passwordd = "@password";
 
-                string query = $@"SELECT id, email, password, first_name, last_name FROM dbo.[user] WHERE email = {emaill} AND password = {passwordd}";
+                string query = $@"SELECT id, email, password, first_name, last_name, park_share FROM dbo.[user] WHERE email = {emaill} AND password = {passwordd}";
 
                 string sqlDataSource = _configuration.GetConnectionString("SolarData");
 
@@ -109,6 +109,7 @@ namespace K299_Back.Controllers
                         user.password = myreader.GetString(2);
                         user.first_name = myreader.GetString(3);
                         user.last_name = myreader.GetString(4);
+                        user.park_share = (double)myreader.GetDecimal(5);
 
                     }
 

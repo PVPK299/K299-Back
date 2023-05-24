@@ -10,5 +10,7 @@ namespace K299_Back.Model
         public string? first_name { get; set; }
 
         public string? last_name { get; set; }
+
+        public double park_share { get; set; }
     }
 }
