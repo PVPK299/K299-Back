@@ -1,6 +1,3 @@
-using K299_Back.Model;
-using Microsoft.Extensions.Hosting;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -8,10 +5,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddHostedService<K299_Back.MyBackgroundService>();
 builder.Services.AddTransient<K299_Back.Controllers.SolarDataController>();
+builder.Services.AddHostedService<K299_Back.WeatherDataCollectService>();
+builder.Services.AddTransient<K299_Back.Controllers.WeatherController>();
+builder.Services.AddTransient<K299_Back.Controllers.WeatherForecastController>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddCors( c =>
+builder.Services.AddCors(c =>
 {
     c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 });

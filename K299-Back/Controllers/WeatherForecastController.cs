@@ -1,8 +1,6 @@
 using K299_Back.Model;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace K299_Back.Controllers
 {
@@ -45,12 +43,16 @@ namespace K299_Back.Controllers
             response.EnsureSuccessStatusCode();
 
             var body = JsonConvert.DeserializeObject<List<Station>>(await response.Content.ReadAsStringAsync());
-            
+
             return StatusCode(StatusCodes.Status200OK, body);
         }
 
-        private async Task<StationObservations?> GetStationObservations(String? station, String? date)
+        // GET: api/weather/GetStationObservations
+        [HttpGet("GetStationObservations")]
+        public async Task<StationObservations?> GetStationObservations(String? station, String? date)
         {
+            _logger.LogInformation($"GetStationObservations: date={date}");
+
             station ??= "kauno-ams";
             date ??= "latest";
 
