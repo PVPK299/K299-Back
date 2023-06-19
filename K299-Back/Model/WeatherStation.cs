@@ -1,12 +1,10 @@
-﻿using System.Text.Json.Serialization;
-
-namespace K299_Back.Model
+﻿namespace K299_Back.Model
 {
     public class StationObservations
     {
-        public Station station { get; set; }
+        public Station? station { get; set; }
 
-        public List<Observation> observations { get; set; }
+        public List<Observation>? observations { get; set; }
     }
 
     public class Observation
@@ -24,7 +22,7 @@ namespace K299_Back.Model
 
         public int windDirection { get; set; }
 
-        public int cloudCover { get; set; }
+        public int? cloudCover { get; set; }
 
         public double seaLevelPressure { get; set; }
 
@@ -32,16 +30,16 @@ namespace K299_Back.Model
 
         public double precipitation { get; set; }
 
-        public string conditionCode { get; set; }
+        public string? conditionCode { get; set; }
     }
 
     public class Station
     {
-        public string code { get; set; }
+        public string? code { get; set; }
 
-        public string name { get; set; }
+        public string? name { get; set; }
 
-        public Coordinates coordinates { get; set; }
+        public Coordinates? coordinates { get; set; }
     }
 
     public class Coordinates
